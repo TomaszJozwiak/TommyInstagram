@@ -3,6 +3,7 @@ package com.example.tommyinstagram;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,6 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Boolean signupModeActive = true;
     TextView changeSignupModeTextView;
     EditText passwordEditText;
+
+    public void showUserList() {
+
+        Intent intent = new Intent(getApplicationContext(), UserListActivity.class);
+        startActivity(intent);
+
+    }
 
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -83,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "SignUp successful", Toast.LENGTH_SHORT).show();
+                            showUserList();
                         } else {
                             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void done(ParseUser user, ParseException e) {
                         if (user != null) {
                             Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                            showUserList();
                         } else {
                             Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -120,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         backgroundLayout.setOnClickListener(this);
         logoImageView.setOnClickListener(this);
         passwordEditText.setOnKeyListener(this);
+
+        if (ParseUser.getCurrentUser() != null) {
+            showUserList();
+        }
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
