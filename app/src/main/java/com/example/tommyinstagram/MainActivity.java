@@ -1,11 +1,15 @@
 package com.example.tommyinstagram;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,10 +19,21 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     Boolean signupModeActive = true;
     TextView changeSignupModeTextView;
+    EditText passwordEditText;
+
+    @Override
+    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+        if (i == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+            signUp(view);
+        }
+
+        return false;
+    }
 
     @Override
     public void onClick(View view) {
@@ -39,15 +54,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 signupButton.setText("Signup");
 
             }
+        } else if (view.getId() == R.id.backgroundLayout || view.getId() == R.id.logoImageView) {
+
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
         }
-
     }
 
     public void signUp(View view) {
 
         EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
-        EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
@@ -95,7 +112,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         changeSignupModeTextView = (TextView) findViewById(R.id.changeSignupModeTextView);
+        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+        ConstraintLayout backgroundLayout = (ConstraintLayout) findViewById(R.id.backgroundLayout);
+        ImageView logoImageView = (ImageView) findViewById(R.id.logoImageView);
+
         changeSignupModeTextView.setOnClickListener(this);
+        backgroundLayout.setOnClickListener(this);
+        logoImageView.setOnClickListener(this);
+        passwordEditText.setOnKeyListener(this);
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
